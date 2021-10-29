@@ -1,17 +1,15 @@
 version: 2.1
 
 jobs:
-  echo:
-    docker:
-      - image: cimg/base:stable
+  check_tools:
+    machine:
+      enabled: true
     steps:
       - run:
-          name: Greet
-          command: echo "I love ${COLOR} builds."
-          environment:
-            COLOR: "green"
+          name: Check tools
+          command: command -v npm
 
 workflows:
   main:
     jobs:
-      - echo
+      - check_tools
