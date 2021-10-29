@@ -1,6 +1,28 @@
 version: 2.1
 
 jobs:
+  check_tools_for_node_default_machine:
+    parallelism: 10
+    machine:
+      enabled: true
+    steps:
+      - run:
+          name: Check NPM
+          command: |
+            command -v npm
+      - run:
+          # because the above step to check NPM may fail, we want this step to always run
+          when: always
+          name: Use NVM to install Node
+          command: |
+            # NVM should be installed in Machine executors,
+            # See https://circleci.com/docs/2.0/docker-to-machine/#pre-installed-software
+            command -v nvm
+            nvm install --lts
+            nvm use --lts
+            command -v npm
+            npm --version
+
   check_tools_for_node:
     parameters:
       machine:
@@ -28,6 +50,7 @@ jobs:
 workflows:
   main:
     jobs:
+      - check_tools_for_node_default_machine
       - check_tools_for_node:
           matrix:
             parameters:
